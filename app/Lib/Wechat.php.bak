@@ -1,0 +1,152 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: SUNS017
+ * Date: 2019/7/17
+ * Time: 11:49
+ */
+
+namespace App\Lib;
+
+class Wechat
+{
+    private $appid = 'wxd31aecbc4af3deb2';
+    private $secret = 'f826d560b1513b1d2f012adfaaa8ea2a';
+    private $merchantid = '1501524791';
+    private $key = 'geqpgDzacMttg4BhsiqFk7aPAD1gzAwl';
+
+    public function __construct(){
+
+    }
+
+    public function code2Session($code){
+        $url = sprintf('https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code',$this->appid,$this->secret,$code);
+        $resp = curl_get($url);
+        return json_decode($resp,true);
+    }
+
+    public function unifiedOrder($openid,$order_id){
+        $url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+
+        $time_expire = date("YmdHis",time() + 300) ;
+        $nonce_str=$this->makeNonce();//获取随机数
+        $body='瑞源预算';
+        $total_fee = 1;
+        $spbill_create_ip = $this->get_server_ip();
+        $paydata = array(
+            'openid'=>$openid,
+            'appid'=>$this->appid,
+            'mch_id'=>$this->merchantid,
+            'time_expire' => $time_expire,
+            'nonce_str'=>$nonce_str,
+            'body'=>$body,
+            'out_trade_no'=>(string)$order_id,
+            'total_fee'=>$total_fee,
+            'spbill_create_ip'=>$spbill_create_ip,
+            'notify_url'=>route('api.wechat.notify'),
+            'trade_type'=>'JSAPI'
+        );
+        //签名
+        $paydata['sign'] = $this->getSign($paydata);
+        $result = $this->xmlToArray($this->curlXml($url,$paydata));
+        if($result['return_code']=='SUCCESS'&&$result['return_msg']=='OK'){
+            $time = time();
+            $tmp=[];//临时数组用于签名
+            $tmp['appId'] = $this->appid;
+            $tmp['nonceStr'] = $nonce_str;
+            $tmp['package'] = 'prepay_id='.$result['prepay_id'];
+            $tmp['signType'] = 'MD5';
+            $tmp['timeStamp'] = "$time";
+            
+            $output = [];
+            $output['timeStamp'] = "$time";//时间戳
+            $output['nonceStr'] = $nonce_str;//随机字符串
+            $output['package'] = 'prepay_id='.$result['prepay_id'];//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
+            $output['paySign'] = $this->getSign($tmp);//签名,具体签名方案参见微信公众号支付帮助文档;
+
+            return $output;
+        }
+        return false;
+    }
+
+    protected function getSign($params){
+        //签名步骤一：按字典序排序参数
+        ksort($params);
+        $string = $this->ToUrlParams($params);
+        //签名步骤二：在string后加入KEY
+        $string = $string . "&key=".$this->key;
+        //签名步骤三：MD5加密
+        $string = md5($string);
+        //签名步骤四：所有字符转为大写
+        $result = strtoupper($string);
+        return $result;
+    }
+
+    protected function ToUrlParams($post){
+        $buff = "";
+        foreach ($post as $k => $v){
+            if($k != "sign" && $v != "" && !is_array($v)){
+                $buff .= $k . "=" . $v . "&";
+            }
+        }
+        $buff = trim($buff, "&");
+        return $buff;
+    }
+
+    public function makeNonce( $length = 32 ){
+        $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        $str = "";
+        for ($i = 0; $i < $length; $i++) {
+            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+        }
+        return $str;
+    }
+
+    public function curlXml($url,$data){
+
+        $xml = "<XML>";
+        foreach ($data as $key=>$val){
+            if(is_array($val)){
+                $xml.="<".$key.">".arrayToXml($val)."</".$key.">";
+            }else{
+                $xml.="<".$key.">".$val."</".$key.">";
+            }
+        }
+        $xml.="</XML>";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        $data = curl_exec($ch);
+        return $data;
+    }
+
+    public function xmlToArray($xml)
+    {
+        //禁止引用外部xml实体
+        libxml_disable_entity_loader(true);
+        $values = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $values;
+    }
+
+    public function get_server_ip()
+    {
+        if (isset($_SERVER['SERVER_NAME'])) {
+            return gethostbyname($_SERVER['SERVER_NAME']);
+        } else {
+            if (isset($_SERVER)) {
+                if (isset($_SERVER['SERVER_ADDR'])) {
+                    $server_ip = $_SERVER['SERVER_ADDR'];
+                } elseif (isset($_SERVER['LOCAL_ADDR'])) {
+                    $server_ip = $_SERVER['LOCAL_ADDR'];
+                }
+            } else {
+                $server_ip = getenv('SERVER_ADDR');
+            }
+            return !empty($server_ip) ? $server_ip : '获取不到服务器IP';
+        }
+    }
+}
