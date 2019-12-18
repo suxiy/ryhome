@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f1c834275480dbf6e9172fdc7241c9d",
+    "content-hash": "37cca826984e63736807c673f712ec15",
     "packages": [
         {
             "name": "caouecs/laravel-lang",
@@ -1621,16 +1621,16 @@
         },
         {
             "name": "overtrue/laravel-wechat",
-            "version": "5.0.0",
+            "version": "4.0.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/laravel-wechat.git",
-                "reference": "7eae11b9297aae7bd33bb636424bdff73f6b0482"
+                "reference": "64d424a9cb8ce82321f1d6e5a053c53e82afcb32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/overtrue/laravel-wechat/zipball/7eae11b9297aae7bd33bb636424bdff73f6b0482",
-                "reference": "7eae11b9297aae7bd33bb636424bdff73f6b0482",
+                "url": "https://api.github.com/repos/overtrue/laravel-wechat/zipball/64d424a9cb8ce82321f1d6e5a053c53e82afcb32",
+                "reference": "64d424a9cb8ce82321f1d6e5a053c53e82afcb32",
                 "shasum": ""
             },
             "require": {
@@ -1670,7 +1670,7 @@
                 "wechat",
                 "weixin"
             ],
-            "time": "2019-03-12T08:27:38+00:00"
+            "time": "2019-03-01T10:43:18+00:00"
         },
         {
             "name": "overtrue/socialite",
