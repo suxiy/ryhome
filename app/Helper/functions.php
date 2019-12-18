@@ -35,7 +35,9 @@ if (!function_exists('option_get_with')) {
  * 记录日志
  */
 if (!function_exists('log_json')) {
-    function log_json($dir,$method,$msg){
+    function log_json($dir,$method,$msg,$tenant_id = '0001'){
+        $msg = is_array($msg)?json_encode($msg,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES):$msg;
+        $msg = stripcslashes($msg);
         $path = public_path('logs/'.$dir.'/'.$method.'/');
         $filename = date('Ymd').'.log';
         $msg = date('[Y-m-d H:i:s]').$msg;
@@ -43,6 +45,21 @@ if (!function_exists('log_json')) {
             mkdir($path,0777,true);
         }
         file_put_contents($path.'/'.$filename,$msg.PHP_EOL,FILE_APPEND);
+    }
+}
+
+if (!function_exists('log_array')) {
+    function log_array($dir,$method,$msg,$tenant_id = 'default'){
+        $msg = is_string($msg)?[$msg]:$msg;
+        $path = public_path('logs/'.$dir.'/'.$method.'/');
+        $filename = date('Ymd').'.log';
+        $_msg = "####################################################\n\r";
+        $_msg .= date('[Y-m-d H:i:s]').print_r($msg,true);
+        $_msg .= "####################################################\n\r";
+        if(!is_dir($path)){
+            mkdir($path,0777,true);
+        }
+        file_put_contents($path.'/'.$filename,$_msg.PHP_EOL,FILE_APPEND);
     }
 }
 
