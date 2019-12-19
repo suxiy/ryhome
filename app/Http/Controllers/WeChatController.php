@@ -66,7 +66,7 @@ class WeChatController extends BaseController
         $nonce_str = $this->generateNonceStr(); //随机字符串
 
         $card_id = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
-        $code = 'A11223344';
+        $code = 'A1000088';
         $result = $this->cardSignature($timestamp,$card_ticket,$nonce_str,$card_id,$openid,$code);
 
         $list['cardId'] = $card_id;
