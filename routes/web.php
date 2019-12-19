@@ -27,5 +27,5 @@ Route::any('/wechat/testOpenidList', 'WeChatController@testOpenidList');
 Route::any('/wechat/testGetToken', 'WeChatController@testGetToken');
 Route::any('/wechat/getCard', 'WeChatController@getCard');
 Route::any('/wechat/getCardByOpenid', 'WeChatController@getCardByOpenid');
-Route::any('/wechat/getUserCard', 'WeChatController@getUserCard');
+Route::any('/api/wechat/getUserCard', 'WeChatController@getUserCard');
 
