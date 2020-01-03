@@ -28,7 +28,9 @@ class WeChatController extends BaseController
     }
 
     public function activePage(Request $request){
-        print_r($request->all());
+        $data = $request->all();
+        log_array('api','wechat_active',$data);
+        print_r($data);
         exit;
     }
 
@@ -93,7 +95,9 @@ class WeChatController extends BaseController
 
     public function testCreate(){
         $card = $this->app->createCard();
-        print_r($card);exit;
+        $code = 'M'.uniqid();
+        $url = $this->app->createQrCode($card,$code);
+        echo "<img src='".$url."'/>";
     }
 
     public function testGet(){
