@@ -28,7 +28,7 @@ class WeChatController extends BaseController
     }
 
     public function activePage(Request $request){
-        print_r($request);
+        print_r($request->all());
         exit;
     }
 
