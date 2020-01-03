@@ -3,16 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Http\Request;
 use Log;
+use App\Http\Helpers\Api\ApiResponse;
 
 class WeChatController extends BaseController
 {
+    use ApiResponse;
+
+    /**
+     * @var \App\Lib\WechatCard mixed
+     */
     private $app;
     private $token;
     public function __construct(){
-        $this->app = \EasyWeChat::officialAccount(); // 公众号
-        $accessToken = $this->app->access_token;
-        $this->token = $accessToken->getToken()['access_token'];
+//        $this->app = \EasyWeChat::officialAccount(); // 公众号
+//        $accessToken = $this->app->access_token;
+//        $this->token = $accessToken->getToken()['access_token'];
+        $this->app = app()->make(\App\Lib\WechatCard::class);
+    }
+
+    public function serve(Request $request){
+        return $this->success();
     }
 
     public function generateNonceStr($length=16){
@@ -65,7 +77,7 @@ class WeChatController extends BaseController
         $card_ticket = $this->getCardApiTicket(); //获取卡券API_ticket
         $nonce_str = $this->generateNonceStr(); //随机字符串
 
-        $card_id = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
+        $card_id = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $code = 'A1000088';
         $result = $this->cardSignature($timestamp,$card_ticket,$nonce_str,$card_id,$openid,$code);
 
@@ -75,60 +87,13 @@ class WeChatController extends BaseController
     }
 
     public function testCreate(){
-        $card = $this->app->card;
-        $cardType = 'MEMBER_CARD';
-        $attributes = [
-//            'background_pic_url'=>'http://asics-connext.oss-cn-zhangjiakou.aliyuncs.com/default/rights/level_bg1.png',
-            'base_info'=>[
-                'logo_url'=>'http://asics-connext.oss-cn-zhangjiakou.aliyuncs.com/oss/wxlogo.jpg',
-                'brand_name'=>'亚瑟士会员卡3',
-                'code_type'=>'CODE_TYPE_ONLY_QRCODE',
-                'title'=>'微信会员卡',
-                'color'=>'Color010',
-                'notice'=>'测试提醒',
-                'service_phone'=>'400-821-0893',
-                'description'=>'卡券使用说明测试描述',
-                'date_info'=>[
-                    'type'=>'DATE_TYPE_PERMANENT',
-                ],
-                'sku'=>[
-                    'quantity'=>2
-                ],
-                'get_limit'=>1,
-                'use_custom_code'=>true,
-                'can_give_friend'=>false,
-            ],
-            'supply_bonus'=>true,
-            'supply_balance'=>false,
-            'prerogative'=>'test_prerogative',
-            'auto_activate'=>true,
-//            "activate_url"=>url('wechat'),
-        ];
-        $result = $card->create($cardType,$attributes);
-        print_r($result);
-        exit;
-    }
-
-
-
-    /**
-     * 处理微信的请求消息
-     *
-     * @return string
-     */
-    public function serve(){
-        Log::info('request arrived.'); # 注意：Log 为 Laravel 组件，所以它记的日志去 Laravel 日志看，而不是 EasyWeChat 日志
-
-        $this->app->server->push(function($message){
-            return sprintf("Name:%s,欢迎关注 ！",$message['FromUserName']);
-        });
-        $response = $this->app->server->serve();
-        return $response->send();
+        $card = $this->app->createCard();
+        print_r($card);exit;
     }
 
     public function testGet(){
         $card = $this->app->card;
-        $cardId = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
+        $cardId = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $result = $card->get($cardId);
         print_r($result);
         exit;
@@ -136,7 +101,7 @@ class WeChatController extends BaseController
 
     public function testList(){
         $card = $this->app->card;
-        $cardId = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
+        $cardId = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $result = $card->list($offset = 0, $count = 10);
         print_r($result);
         exit;
@@ -144,7 +109,7 @@ class WeChatController extends BaseController
 
     public function testOpenidList(){
         $card = $this->app->card;
-        $cardId = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
+        $cardId = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $openid  = 'ongXd4g_q6Q4WsdYGpHaxE3Omv84';
         $result = $card->getUserCards($openid, $cardId);
         print_r($result);
@@ -153,7 +118,7 @@ class WeChatController extends BaseController
 
     public function testDelete(){
         $card = $this->app->card;
-        $cardId = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
+        $cardId = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $result = $card->delete($cardId);
         print_r($result);
         exit;
@@ -161,7 +126,7 @@ class WeChatController extends BaseController
 
     public function testDisable(){
         $card = $this->app->card;
-        $cardId = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
+        $cardId = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $code = 'M112233445568';
         $result = $card->code->disable($code, $cardId);;
         print_r($result);
@@ -169,28 +134,20 @@ class WeChatController extends BaseController
     }
 
     public function testReceive(){
-        $card = $this->app->card;
-        $cardId = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
-        // 领取单张卡券
-        $cards = [
-            'action_name' => 'QR_CARD',
-            'expire_seconds' => 1800,
-            'action_info' => [
-                'card' => [
-                    'card_id' => $cardId,
-                    'code' => 'M112233445567',
-                    'outer_str' => 'test',
-                ],
-            ],
-        ];
-        $result = $card->createQrCode($cards);
-        echo "<img src='".$result['show_qrcode_url']."'/>";
-        exit;
+        try{
+            $card_id = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
+            $code = 'M112233445561';
+            $url = $this->app->createQrCode($card_id,$code);
+            echo "<img src='".$url."'/>";
+            exit;
+        }catch (\Exception $e){
+            die($e->getMessage());
+        }
     }
 
     public function testUpdate(){
         $card = $this->app->card;
-        $cardId = 'pr4nAvmPY3_Nes7mPGjF3uwJSZQg';
+        $cardId = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $type = 'MEMBER_CARD';
         $attributes = [
             'base_info' => [
