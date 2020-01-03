@@ -24,17 +24,19 @@ class WeChatController extends BaseController
     }
 
     public function serve(Request $request){
-        log_array('api','wechat',$request->all());
-        $result = $this->checkSignature();
-        log_array('api','wechat',$result?1:0);
+        $data = $request->all();
+        log_array('api','wechat',$data);
+        $result = $this->checkSignature($data);
+        log_array('api','wechat',$result);
 //        return $this->success();
     }
 
-    private function checkSignature()
+    private function checkSignature($data)
     {
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
+        $echoStr  = $data[ "echostr" ];
+        $signature = $data["signature"];
+        $timestamp = $data["timestamp"];
+        $nonce = $data["nonce"];
 
         $token = 'wxthytrdh';
         $tmpArr = array($token, $timestamp, $nonce);
@@ -43,9 +45,9 @@ class WeChatController extends BaseController
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){
-            return true;
+            return response($echoStr);
         }else{
-            return false;
+            return response();
         }
     }
 
