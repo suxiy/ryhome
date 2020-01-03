@@ -81,7 +81,7 @@ class WechatCard
                             'quantity'=>4
                         ],
                         'get_limit'=>1,
-                        'use_custom_code'=>true,
+//                        'use_custom_code'=>true,
                         'can_give_friend'=>false,
                     ],
                     'supply_bonus'=>true,
@@ -113,7 +113,7 @@ class WechatCard
             'action_info'=> [
                 'card'=>[
                     'card_id'=>$card_id,
-                    'code'=>$member_code,
+//                    'code'=>$member_code,
                     'outer_str'=>'test'
                 ]
             ],
@@ -127,5 +127,18 @@ class WechatCard
             $errorMsg = empty($resp)?($this->curl->errorMessage):(object_get($resp,'errmsg').object_get($resp,'errcode'));
             throw new \Exception($errorMsg);
         }
+    }
+
+    public function active($card_id,$member_code){
+        $url = "https://api.weixin.qq.com/card/membercard/activate?access_token={$this->token}";
+        $data = [
+            'init_bonus'=> 100,
+            'init_bonus_record'=> '旧积分同步',
+            'membership_number'=>$member_code,
+            'code'=>'',
+            'card_id'=>$card_id,
+        ];
+        call_user_func([$this->curl,'post'],$url,json_encode($data,320));
+        return $this->curl->response;
     }
 }
