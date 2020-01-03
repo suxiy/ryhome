@@ -25,7 +25,8 @@ class WeChatController extends BaseController
 
     public function serve(Request $request){
         log_array('api','wechat',$request->all());
-        return $this->checkSignature();
+        $result = $this->checkSignature();
+        log_array('api','wechat',$result?1:0);
 //        return $this->success();
     }
 
