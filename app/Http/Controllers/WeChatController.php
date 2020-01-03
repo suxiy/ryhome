@@ -27,6 +27,11 @@ class WeChatController extends BaseController
         return $this->success();
     }
 
+    public function activePage(Request $request){
+        echo 1;
+        exit;
+    }
+
     public function generateNonceStr($length=16){
         // 密码字符集，可任意添加你需要的字符
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

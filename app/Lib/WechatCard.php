@@ -67,9 +67,9 @@ class WechatCard
 //                    'background_pic_url'=>'http://asics-connext.oss-cn-zhangjiakou.aliyuncs.com/default/rights/level_bg1.png',
                     'base_info'=>[
                         'logo_url'=>'http://asics-connext.oss-cn-zhangjiakou.aliyuncs.com/oss/wxlogo.jpg',
-                        'brand_name'=>'测试会员卡',
+                        'brand_name'=>'测试会员卡20190103',
                         'code_type'=>'CODE_TYPE_ONLY_QRCODE',
-                        'title'=>'微信会员卡',
+                        'title'=>'微信会员卡20190103',
                         'color'=>'Color010',
                         'notice'=>'测试提醒',
                         'service_phone'=>'400-821-0893',
@@ -88,7 +88,7 @@ class WechatCard
                     'supply_balance'=>false,
                     'prerogative'=>'test_prerogative',
                     'auto_activate'=>false,
-                    'activate_url'=>(url('wechat')),
+                    'activate_url'=>(url('wechat/active')),
                 ],
             ],
         ];
