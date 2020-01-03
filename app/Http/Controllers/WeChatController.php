@@ -30,7 +30,7 @@ class WeChatController extends BaseController
     public function activePage(Request $request){
         $data = $request->all();
         log_array('api','wechat_active',$data);
-        $this->app->active($data['card_id'])
+//        $this->app->active($data['card_id'])
         exit;
     }
 
