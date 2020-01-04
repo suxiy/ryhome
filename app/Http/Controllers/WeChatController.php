@@ -28,6 +28,7 @@ class WeChatController extends BaseController
         log_array('api','wechat',$data);
         $result = $this->checkSignature($data);
         log_array('api','wechat',$result);
+        return $result;
 //        return $this->success();
     }
 
@@ -45,9 +46,9 @@ class WeChatController extends BaseController
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){
-            return response($echoStr);
+            return true;
         }else{
-            return response();
+            return false;
         }
     }
 
