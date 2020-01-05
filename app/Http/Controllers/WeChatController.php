@@ -59,43 +59,6 @@ class WeChatController extends BaseController
         exit;
     }
 
-    public function generateNonceStr($length=16){
-        // 密码字符集，可任意添加你需要的字符
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        $str = "";
-        for($i = 0; $i < $length; $i++)
-        {
-            $str .= $chars[mt_rand(0, strlen($chars) - 1)];
-        }
-        return $str;
-    }
-
-    public function getCardApiTicket() {
-            $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" . $this->token . "&type=wx_card";
-            $api_ticket = request_Get($url);
-            $res = json_decode($api_ticket, true);
-            return $res['ticket'];
-    }
-
-    public function cardSignature($timestamp, $api_ticket, $noncestr, $card_id, $openid, $code){
-        $arr = array();
-        $arr['timestamp'] = $timestamp;
-        $arr['code'] = $code;
-        $arr['nonce_str'] = $noncestr;
-        $arr['ticket'] = $api_ticket;
-        $arr['openid'] = $openid;
-        $arr['card_id'] = $card_id;
-//根据官网说明，卡券签名需要的参数有：timestamp（时间戳）,code（卡的编号），nonce_str（随机字符串），ticket（卡券ticket），openid（用户的openid），card_id（卡券的ID）
-        sort($arr, SORT_STRING); //排序，这一步一定要有，否则会不成功
-        $str = '';
-        foreach ($arr as $v) {
-            $str .= $v;
-        }
-//通过foreach组装成字符串
-        $signature = sha1($str); //最后通过sha1生成签名
-        return array('code' => $code,'openid' =>$openid,'timestamp'=>$timestamp,'nonce_str'=>$noncestr,'signature'=>$signature);
-    }
-
     public function getUserCard() {
         $openid = request()->get('openid');
 
@@ -106,12 +69,12 @@ class WeChatController extends BaseController
         //成功
         $list = array();
         $timestamp = time(); //时间戳
-        $card_ticket = $this->getCardApiTicket(); //获取卡券API_ticket
-        $nonce_str = $this->generateNonceStr(); //随机字符串
+        $card_ticket = $this->app->getCardApiTicket(); //获取卡券API_ticket
+        $nonce_str = $this->app->generateNonceStr(); //随机字符串
 
         $card_id = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
         $code = 'A1000088';
-        $result = $this->cardSignature($timestamp,$card_ticket,$nonce_str,$card_id,$openid,$code);
+        $result = $this->app->cardSignature($timestamp,$card_ticket,$nonce_str,$card_id,$openid,$code);
 
         $list['cardId'] = $card_id;
         $list['cardExt'] = json_encode($result);
@@ -119,6 +82,11 @@ class WeChatController extends BaseController
     }
 
     public function testCreate(){
+        $card = $this->app->createCard();
+        echo $card;
+    }
+
+    public function testCreateQr(){
         $card = $this->app->createCard();
         $code = 'M'.uniqid();
         $url = $this->app->createQrCode($card,$code);
