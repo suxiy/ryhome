@@ -173,7 +173,7 @@ class WechatCard
             'init_bonus'=> 100,
             'init_bonus_record'=> '旧积分同步',
             'membership_number'=>$member_code,
-            'code'=>'',
+//            'code'=>'',
             'card_id'=>$card_id,
         ];
         call_user_func([$this->curl,'post'],$url,json_encode($data,320));

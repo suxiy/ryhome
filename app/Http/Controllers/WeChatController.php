@@ -52,13 +52,6 @@ class WeChatController extends BaseController
         }
     }
 
-    public function activePage(Request $request){
-        $data = $request->all();
-        log_array('api','wechat_active',$data);
-//        $this->app->active($data['card_id'])
-        exit;
-    }
-
     public function getUserCard() {
         $openid = request()->get('openid');
 
@@ -73,7 +66,7 @@ class WeChatController extends BaseController
         $nonce_str = $this->app->generateNonceStr(); //随机字符串
 
         $card_id = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
-        $code = 'A1000088';
+        $code = 'A'.uniqid();
         $result = $this->app->cardSignature($timestamp,$card_ticket,$nonce_str,$card_id,$openid,$code);
 
         $list['cardId'] = $card_id;
@@ -91,6 +84,15 @@ class WeChatController extends BaseController
         $code = 'M'.uniqid();
         $url = $this->app->createQrCode($card,$code);
         echo "<img src='".$url."'/>";
+    }
+
+    public function active(Request $request){
+        $data = $request->all();
+        log_array('api','wechat_active',$data);
+        $code = 'B'.uniqid();
+        $result = $this->app->active($data['card_id'],$code);
+        log_array('api','wechat_active',$result);
+        exit;
     }
 
     public function testGet(){
