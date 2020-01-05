@@ -86,7 +86,7 @@ class WeChatController extends BaseController
         echo "<img src='".$url."'/>";
     }
 
-    public function active(Request $request){
+    public function activePage(Request $request){
         $data = $request->all();
         log_array('api','wechat_active',$data);
         $code = 'B'.uniqid();
