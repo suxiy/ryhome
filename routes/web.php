@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::any('/wechat', 'WeChatController@serve');
 Route::any('/wechat/active', 'WeChatController@activePage');
+Route::any('/wechat/update', 'WeChatController@cardUpdate');
 Route::any('/wechat/testCreate', 'WeChatController@testCreate');
 Route::any('/wechat/testCreateQr', 'WeChatController@testCreateQr');
 Route::any('/wechat/testGet', 'WeChatController@testGet');

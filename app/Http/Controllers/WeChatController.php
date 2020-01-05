@@ -24,11 +24,14 @@ class WeChatController extends BaseController
     }
 
     public function serve(Request $request){
-        $data = $request->all();
-        log_array('api','wechat',$data);
-        $result = $this->checkSignature($data);
-        log_array('api','wechat',$result);
-        return $result;
+//        $data = $request->all();
+//        log_array('api','wechat',$data);
+//        $result = $this->checkSignature($data);
+//        log_array('api','wechat',$result);
+        $msg = request()->getContent();
+        $xmlObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
+        log_array('api','wechat',$xmlObj);
+        return true;
 //        return $this->success();
     }
 
@@ -92,6 +95,12 @@ class WeChatController extends BaseController
         $code = 'B'.uniqid();
         $result = $this->app->active($data['card_id'],$code);
         log_array('api','wechat_active',$result);
+        exit;
+    }
+
+    public function cardUpdate(Request $request){
+        $result = $this->app->update();
+        log_array('api','wechat_update',$result);
         exit;
     }
 

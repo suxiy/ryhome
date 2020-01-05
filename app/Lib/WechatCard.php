@@ -167,18 +167,27 @@ class WechatCard
         }
     }
 
-    public function active($card_id,$member_code){
+    public function active($card_id,$code,$member_code){
         $url = "https://api.weixin.qq.com/card/membercard/activate?access_token={$this->token}";
         $data = [
             'init_bonus'=> 100,
             'init_bonus_record'=> '旧积分同步',
             'membership_number'=>$member_code,
-//            'code'=>'',
+            'code'=>$code,
             'card_id'=>$card_id,
         ];
         call_user_func([$this->curl,'post'],$url,json_encode($data,320));
         return $this->curl->response;
     }
 
-
+    public function update(){
+        $url = "https://api.weixin.qq.com/card/membercard/updateuser?access_token={$this->token}";
+        $data = [
+            'code'=> 'B5e11fc4472474',
+            'card_id'=> 'pr4nAvoh-9YGqS4QJpEce9_RJNn4',
+            'bonus'=>150,
+        ];
+        call_user_func([$this->curl,'post'],$url,json_encode($data,320));
+        return $this->curl->response;
+    }
 }
