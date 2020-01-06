@@ -124,6 +124,11 @@ class WechatCard
                     ],
                     'supply_bonus'=>true,
                     'supply_balance'=>false,
+                    'custom_field1'=>[
+                        'name_type'=>'FIELD_NAME_TYPE_LEVEL',
+                        'name'=>'白金会员',
+                        'url'=>'',
+                    ],
                     'prerogative'=>'test_prerogative',
                     'auto_activate'=>false,
                     'activate_url'=>(url('wechat/active')),

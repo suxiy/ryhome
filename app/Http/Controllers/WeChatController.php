@@ -92,8 +92,9 @@ class WeChatController extends BaseController
     public function activePage(Request $request){
         $data = $request->all();
         log_array('api','wechat_active',$data);
-        $code = 'B'.uniqid();
-        $result = $this->app->active($data['card_id'],$code);
+        $code = '352634741657';
+        $member_code = 'B'.uniqid();
+        $result = $this->app->active($data['card_id'],$code,$member_code);
         log_array('api','wechat_active',$result);
         exit;
     }
