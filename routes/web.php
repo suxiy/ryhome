@@ -31,4 +31,5 @@ Route::any('/wechat/testGetToken', 'WeChatController@testGetToken');
 Route::any('/wechat/getCard', 'WeChatController@getCard');
 Route::any('/wechat/getCardByOpenid', 'WeChatController@getCardByOpenid');
 Route::any('/api/wechat/getUserCard', 'WeChatController@getUserCard');
+Route::any('/wechat/clear', 'WeChatController@clear');
 

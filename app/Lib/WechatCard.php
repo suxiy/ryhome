@@ -106,10 +106,10 @@ class WechatCard
                     'base_info'=>[
                         'logo_url'=>'http://asics-connext.oss-cn-zhangjiakou.aliyuncs.com/oss/wxlogo.jpg',
                         'brand_name'=>'测试会员卡20190103',
-                        'code_type'=>'CODE_TYPE_ONLY_QRCODE',
+                        'code_type'=>'CODE_TYPE_QRCODE',
                         'title'=>'微信会员卡20190103',
                         'color'=>'Color010',
-                        'notice'=>'测试提醒',
+                        'notice'=>'微信会员卡',
                         'service_phone'=>'400-821-0893',
                         'description'=>'卡券使用说明测试描述',
                         'date_info'=>[
@@ -118,18 +118,37 @@ class WechatCard
                         'sku'=>[
                             'quantity'=>4
                         ],
+                        //跳转我的权益
+                        'custom_url_name'=>'我的权益',
+                        'custom_app_brand_user_name'=>'gh_c0306c7c74b3@app',
+                        'custom_app_brand_pass'=>'pages/homepage/homepage',
                         'get_limit'=>1,
 //                        'use_custom_code'=>true,
+                        'can_share'=>false,
                         'can_give_friend'=>false,
+                        'need_push_on_view'=>false,
+                    ],
+                    //跳转门店列表
+                    'custom_cell1'=>[
+                        "name"=>"门店列表",
+                        'app_brand_user_name'=>'gh_c0306c7c74b3@app',
+                        'app_brand_pass'=>'pages/homepage/homepage',
+                    ],
+                    //跳转会员章程
+                    'custom_cell2'=>[
+                        "name"=>"会员章程",
+                        'app_brand_user_name'=>'gh_c0306c7c74b3@app',
+                        'app_brand_pass'=>'pages/homepage/homepage',
                     ],
                     'supply_bonus'=>true,
                     'supply_balance'=>false,
                     'custom_field1'=>[
                         'name_type'=>'FIELD_NAME_TYPE_LEVEL',
-                        'name'=>'白金会员',
-                        'url'=>'',
                     ],
-                    'prerogative'=>'test_prerogative',
+                    'custom_field2'=>[
+                        'name_type'=>'FIELD_NAME_TYPE_COUPON',
+                    ],
+                    'prerogative'=>'会员卡特权说明',
                     'auto_activate'=>false,
                     'activate_url'=>(url('wechat/active')),
                 ],
@@ -195,4 +214,14 @@ class WechatCard
         call_user_func([$this->curl,'post'],$url,json_encode($data,320));
         return $this->curl->response;
     }
+
+    public function clear(){
+        $url = "https://api.weixin.qq.com/cgi-bin/clear_quota?access_token={$this->token}";
+        $data = [
+            'appid'=> $this->appid,
+        ];
+        call_user_func([$this->curl,'post'],$url,json_encode($data,320));
+        return $this->curl->response;
+    }
+
 }

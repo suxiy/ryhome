@@ -172,4 +172,8 @@ class WeChatController extends BaseController
         print_r($result);
         exit;
     }
+
+    public function clear(){
+        return $this->app->clear();
+    }
 }
