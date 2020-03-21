@@ -73,23 +73,35 @@ class WechatCard
         return $str;
     }
 
-    public function cardSignature($timestamp, $api_ticket, $noncestr, $card_id, $openid, $code){
-        $arr = array();
-        $arr['timestamp'] = $timestamp;
-        $arr['code'] = $code;
-        $arr['nonce_str'] = $noncestr;
-        $arr['ticket'] = $api_ticket;
-        $arr['openid'] = $openid;
-        $arr['card_id'] = $card_id;
-//根据官网说明，卡券签名需要的参数有：timestamp（时间戳）,code（卡的编号），nonce_str（随机字符串），ticket（卡券ticket），openid（用户的openid），card_id（卡券的ID）
+    public function cardSignature($timestamp, $api_ticket, $noncestr, $card_id, $openid){
+//        $arr = array();
+//        $arr['timestamp'] = $timestamp;
+//        $arr['nonce_str'] = $noncestr;
+//        $arr['ticket'] = $api_ticket;
+//        $arr['openid'] = $openid;
+//        $arr['card_id'] = $card_id;
+////根据官网说明，卡券签名需要的参数有：timestamp（时间戳）,code（卡的编号），nonce_str（随机字符串），ticket（卡券ticket），openid（用户的openid），card_id（卡券的ID）
+//        sort($arr, SORT_STRING); //排序，这一步一定要有，否则会不成功
+//        $str = '';
+//        foreach ($arr as $v) {
+//            $str .= $v;
+//        }
+////通过foreach组装成字符串
+//        $signature = sha1($str); //最后通过sha1生成签名
+//        return array('openid' =>$openid,'timestamp'=>$timestamp,'nonce_str'=>$noncestr,'signature'=>$signature);
+        $timestamp = time();
+        $nonce_str = $noncestr;
+        $ticket = $api_ticket;
+        $arr = compact('timestamp','nonce_str','ticket','openid','card_id');
+        //根据官网说明，卡券签名需要的参数有：timestamp（时间戳）,code（卡的编号），nonce_str（随机字符串），ticket（卡券ticket），openid（用户的openid），card_id（卡券的ID）
         sort($arr, SORT_STRING); //排序，这一步一定要有，否则会不成功
         $str = '';
         foreach ($arr as $v) {
             $str .= $v;
         }
-//通过foreach组装成字符串
+        //通过foreach组装成字符串
         $signature = sha1($str); //最后通过sha1生成签名
-        return array('code' => $code,'openid' =>$openid,'timestamp'=>$timestamp,'nonce_str'=>$noncestr,'signature'=>$signature);
+        return ['openid' =>$openid,'timestamp'=>$timestamp,'nonce_str'=>$nonce_str,'signature'=>$signature];
     }
 
     public function getCard(){
@@ -102,13 +114,13 @@ class WechatCard
             'card'=>[
                 'card_type'=>'MEMBER_CARD',
                 'member_card'=>[
-//                    'background_pic_url'=>'http://asics-connext.oss-cn-zhangjiakou.aliyuncs.com/default/rights/level_bg1.png',
+                    'background_pic_url'=>'https://mmbiz.qpic.cn/mmbiz_png/8nbmbbKEgzdRfuDwg8Iw1iaxk9Cl1FtUacbU2oTOC98LN3JRlRPrT9e4mCzwITse6jAHibf75JpRa0EZUYEibmxzQ/0?wx_fmt=png',
                     'base_info'=>[
                         'logo_url'=>'http://asics-connext.oss-cn-zhangjiakou.aliyuncs.com/oss/wxlogo.jpg',
                         'brand_name'=>'测试会员卡20190103',
                         'code_type'=>'CODE_TYPE_QRCODE',
                         'title'=>'微信会员卡20190103',
-                        'color'=>'Color010',
+                        'color'=>'Color040',
                         'notice'=>'微信会员卡',
                         'service_phone'=>'400-821-0893',
                         'description'=>'卡券使用说明测试描述',
@@ -147,9 +159,12 @@ class WechatCard
                     ],
                     'custom_field2'=>[
                         'name_type'=>'FIELD_NAME_TYPE_COUPON',
+                        'url'=>'http://www.qq.com',
+                        'app_brand_user_name'=>'gh_c0306c7c74b3@app',
+                        'app_brand_pass'=>'pages/homepage/homepage',
                     ],
                     'prerogative'=>'会员卡特权说明',
-                    'auto_activate'=>false,
+                    'auto_activate'=>true,
                     'activate_url'=>(url('wechat/active')),
                 ],
             ],
@@ -207,9 +222,14 @@ class WechatCard
     public function update(){
         $url = "https://api.weixin.qq.com/card/membercard/updateuser?access_token={$this->token}";
         $data = [
-            'code'=> 'B5e11fc4472474',
-            'card_id'=> 'pr4nAvoh-9YGqS4QJpEce9_RJNn4',
-            'bonus'=>150,
+            'code'=> '934055961652',
+            'card_id'=> 'pr4nAvmuCkiYrpKdkPDruVnfwlpM',
+            'bonus'=>170,
+            'custom_field_value1'=>'白金会员',
+            'notify_optional'=>[
+                'is_notify_bonus'=>false,
+                'is_notify_balance'=>false,
+            ],
         ];
         call_user_func([$this->curl,'post'],$url,json_encode($data,320));
         return $this->curl->response;
@@ -222,6 +242,48 @@ class WechatCard
         ];
         call_user_func([$this->curl,'post'],$url,json_encode($data,320));
         return $this->curl->response;
+    }
+
+    public function upload(){
+        $url = "https://api.weixin.qq.com/shakearound/material/add?access_token={$this->token}&type=TYPEPOST";
+        $data = [
+            'media'=> '123.jpg',
+        ];
+        call_user_func([$this->curl,'post'],$url,json_encode($data,320));
+        $resp = $this->curl->response;
+        return $resp;
+    }
+
+    public function find($card_id,$code){
+        $url = "https://api.weixin.qq.com/card/code/get?access_token={$this->token}";
+        $data = [
+            'card_id'=>$card_id,
+            'code'=>$code,
+        ];
+        call_user_func([$this->curl,'post'],$url,json_encode($data,320));
+        $resp = $this->curl->response;
+        return $resp;
+    }
+
+    public function query(){
+        $url = "https://api.weixin.qq.com/card/user/getcardlist?access_token={$this->token}";
+        $data = [
+            'openid'=> 'or4nAvvbzjSnifmVaL_4ymog3rI0',
+        ];
+        call_user_func([$this->curl,'post'],$url,json_encode($data,320));
+        $resp = $this->curl->response;
+        return $resp;
+    }
+
+    public function del($card_id,$code){
+        $url = "https://api.weixin.qq.com/card/code/unavailable?access_token={$this->token}";
+        $data = [
+            'code'=>"$code",
+            'card_id'=>"$card_id",
+        ];
+        call_user_func([$this->curl,'post'],$url,json_encode($data,320));
+        $resp = $this->curl->response;
+        return $resp;
     }
 
 }

@@ -14,7 +14,7 @@ class BidController extends Controller
                 'submitphone'=>$request->get('submitphone'),
                 'projectid'=>$request->get('projectid'),
                 'submitperson'=>$request->get('submitperson'),
-                'sumbmitbidmoney'=>$request->get('sumbmitbidmoney'),
+                'submitbidmoney'=>$request->get('sumbmitbidmoney'),
                 'submitbiddescribe'=>$request->get('submitbiddescribe'),
             ];
             if($data){

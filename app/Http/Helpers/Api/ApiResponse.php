@@ -12,7 +12,7 @@ trait ApiResponse
      * @param $data
      * @return mixed
      */
-    public function respond($data){
+    public function respond($data,$type=0){
         //返回时统一记录接口入参出参日志
         $requestUri = explode('/',request()->getRequestUri());
         $dir = 'api';
@@ -30,7 +30,14 @@ trait ApiResponse
         //系统异常记录到日志 不需要显示给前台
         $log['error']=$this->error??'';
         log_array($dir,$method,$log);
+        if($type == 1){
+            return $data;
+        }
         return response()->json($data);
+    }
+
+    public function text($msg){
+        return $this->respond($msg,1);
     }
 
     public function success($data=[], $msg = '成功'){

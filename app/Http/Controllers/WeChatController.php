@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
@@ -68,9 +66,8 @@ class WeChatController extends BaseController
         $card_ticket = $this->app->getCardApiTicket(); //获取卡券API_ticket
         $nonce_str = $this->app->generateNonceStr(); //随机字符串
 
-        $card_id = 'pr4nAvsf_D2iOr8tbcoGVltF1wDk';
-        $code = 'A'.uniqid();
-        $result = $this->app->cardSignature($timestamp,$card_ticket,$nonce_str,$card_id,$openid,$code);
+        $card_id = 'pr4nAvofzAnFMK9G0NRftkgqbNyI';
+        $result = $this->app->cardSignature($timestamp,$card_ticket,$nonce_str,$card_id,$openid);
 
         $list['cardId'] = $card_id;
         $list['cardExt'] = json_encode($result);
@@ -92,16 +89,17 @@ class WeChatController extends BaseController
     public function activePage(Request $request){
         $data = $request->all();
         log_array('api','wechat_active',$data);
-        $code = '352634741657';
+        $code = '746290963759';
         $member_code = 'B'.uniqid();
         $result = $this->app->active($data['card_id'],$code,$member_code);
         log_array('api','wechat_active',$result);
-        exit;
+        return view("front.wechat.getCard");
     }
 
     public function cardUpdate(Request $request){
         $result = $this->app->update();
         log_array('api','wechat_update',$result);
+        print_r($result);
         exit;
     }
 
@@ -176,4 +174,24 @@ class WeChatController extends BaseController
     public function clear(){
         return $this->app->clear();
     }
+
+    public function upload(){
+        print_r($this->app->upload());
+        exit;
+    }
+
+    public function query(){
+        $list = $this->app->query();
+        $card_list = object_get($list,'card_list');
+        if($card_list){
+            foreach($card_list as $item){
+                $card_id = $item->card_id;
+                $code = $item->code;
+//                $find_resp = $this->app->find($card_id,$code);
+                $resp = $this->app->del($card_id,$code);
+            }
+        }
+        exit;
+    }
+
 }

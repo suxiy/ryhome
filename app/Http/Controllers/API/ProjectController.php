@@ -9,18 +9,23 @@ class ProjectController extends ApiController
 {
     public function selectProjectByReward(Request $request){
         try{
-            $query = $request->get('status');
-            if($query){
-                $regex = "/^reward([<|>|=]+)\d+$/";
-                preg_match($regex,$query,$match);
-                if($match[1]){
-                    $condition = explode($match[1],$query);
-                    $data = DB::table('app_project')
-                        ->where($condition[0],$match[1], intval($condition[1]))
-                        ->orderByDesc('reward')
-                        ->get()->toArray();
-                    return response()->json($data);
+            $json = $request->get('json');
+            if($json){
+                $data = json_decode($json,true);
+                $model = DB::table('app_project');
+                $startReward = array_get($data,'startReward');
+                if($startReward){
+                    $model = $model->where('reward','>',intval($startReward));
                 }
+                $endReward = array_get($data,'endReward');
+                if($endReward){
+                    $model = $model->where('reward','<=',intval($endReward));
+                }
+                $data = $model
+                    ->orderByDesc('created_at')
+                    ->orderByDesc('reward')
+                    ->get()->toArray();
+                return response()->json($data);
             }
             throw new \Exception('error');
         }catch (\Exception $e){

@@ -39,7 +39,7 @@ class UserController extends Controller
                         ['phone',$phone],
                         ['password',$password]
                     ])
-                    ->get(['nickname','phone','skill','address','introduce','time'])->toArray();
+                    ->get(['id','nickname','phone','skill','address','introduce','time'])->toArray();
                 return response()->json($data);
             }
             throw new \Exception('error');
@@ -111,6 +111,9 @@ class UserController extends Controller
                 'phone'=>$request->get('phone'),
                 'skill'=>$request->get('skill'),
                 'introduce'=>$request->get('introduce'),
+                'time'=>date('Y-m-d H:i:s'),
+                'openid'=>$request->get('openid'),
+                'inviter'=>$request->get('invite_code'),
             ];
             if($data){
                 if(DB::table('app_user')->insert($data)){
@@ -119,7 +122,7 @@ class UserController extends Controller
             }
             throw new \Exception('error');
         }catch (\Exception $e){
-            return '操作失败';
+            return $e->getMessage();
         }
     }
 
