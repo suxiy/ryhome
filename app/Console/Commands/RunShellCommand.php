@@ -49,7 +49,7 @@ class RunShellCommand extends Command
                             'keyword1' => $project->address,
                             'keyword2' => $project->contactperson,
                             'keyword3' => $project->status,
-                            'keyword4' => $project->contactphone,
+                            'keyword4' => '15543789003',
                             'keyword5' => $project->projectdescribe,
                         ],
                     ]);
