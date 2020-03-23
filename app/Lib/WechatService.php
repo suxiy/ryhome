@@ -24,6 +24,7 @@ class WechatService
             ],
         ];
         $this->app = Factory::officialAccount($config);
+        $this->app['cache'] = new \Overtrue\LaravelWeChat\CacheBridge(app('cache.store'));
     }
 
     public function serve(){
