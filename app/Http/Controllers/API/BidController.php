@@ -18,9 +18,8 @@ class BidController extends Controller
                 'submitbiddescribe'=>$request->get('submitbiddescribe'),
             ];
             if($data){
-                if(DB::table('app_bid')->insert($data)){
-                    return '操作成功';
-                }
+                DB::table('app_bid')->insert($data);
+                return '操作成功';
             }
             throw new \Exception('error');
         }catch (\Exception $e){

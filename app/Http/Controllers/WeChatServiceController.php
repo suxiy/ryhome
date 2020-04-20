@@ -63,4 +63,6 @@ class WeChatServiceController extends BaseController
         header('location:'. $target_url);
     }
 
+
+
 }
