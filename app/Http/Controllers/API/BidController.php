@@ -18,7 +18,10 @@ class BidController extends Controller
                 'submitbiddescribe'=>$request->get('submitbiddescribe'),
             ];
             if($data){
-                DB::table('app_bid')->insert($data);
+                if(!DB::table('app_bid')->where('submitphone',$data['submitphone'])
+                    ->where('projectid',$data['projectid'])->count()){
+                    DB::table('app_bid')->insert($data);
+                }
                 return '操作成功';
             }
             throw new \Exception('error');
