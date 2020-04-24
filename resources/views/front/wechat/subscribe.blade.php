@@ -19,6 +19,7 @@
             background: #3385ff;
             background-image: none;
             position: absolute;
+            top: 15%;
             left: 39%;
         }
         .cancel{

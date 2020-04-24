@@ -69,9 +69,9 @@
         ]
     },
     "repositories": {
-        "hooks": {
+        "packagist": {
             "type": "composer",
-            "url": "https://larapack.io"
+            "url": "https://mirrors.cloud.tencent.com/composer/"
         }
     }
 }

@@ -14,6 +14,7 @@ Route::group([
 
     $router->resource('/app/users', AppUserController::class);
     $router->resource('/app/projects', AppProjectController::class);
+    $router->resource('/app/projects-nochecked', AppProjectNoCheckedController::class);
     $router->resource('/app/companyreview', AppCompanyreviewController::class);
     $router->post('/app/companyreview/{id}/approve', 'AppCompanyreviewController@approve');
     $router->resource('/app/company', AppCompanyController::class);

@@ -109,6 +109,11 @@ class ProjectController extends ApiController
         }
     }
 
+    /**
+     * 发布项目(先存入未审核的项目表中)
+     * @param Request $request
+     * @return array|mixed
+     */
     public function wantedPublish(Request $request){
         try{
             $id = 'D'.time().rand(100,999);
@@ -129,7 +134,7 @@ class ProjectController extends ApiController
                 'openid'=>$request->get('openid'),
             ];
             if($data){
-                $insertId = DB::table('app_project')->insertGetId($data);
+                $insertId = DB::table('app_project_no_checked')->insertGetId($data);
                 if($insertId){
                     $id_new = 'SLZJ'.date('Ymd').$insertId;
                     DB::table('app_project')->where('project_id',$insertId)
