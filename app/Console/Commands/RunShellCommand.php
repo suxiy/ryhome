@@ -17,7 +17,7 @@ class RunShellCommand extends Command
     {
         try{
             $option = $this->argument('option');
-            $allow_options = ['send_wxs_msg','create_menu'];
+            $allow_options = ['send_wxs_msg','create_menu','send_notify'];
             if(in_array($option,$allow_options)){
                 call_user_func([__CLASS__,$option]);
                 $this->line('All done');
@@ -103,6 +103,18 @@ class RunShellCommand extends Command
             ]
         ];
         $wechat->app->menu->create($buttons);
+    }
+
+    protected function send_notify(){
+        $model = DB::table('app_project_no_checked')->where('is_notify',0);
+        $projects = $model->orderBy('created_at','ASC')->get();
+        if($projects->count()){
+            \Mail::send('emails.projectSubmitNotify',['projects'=>$projects],function($message){
+                $to = 'steven.sun1@connext.com.cn'; $message ->to($to)->subject('算量之家项目审核');
+            });
+            $model->update(['is_notify'=>1]);
+        }
+
     }
 
 }

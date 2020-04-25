@@ -11,7 +11,7 @@ class Verify extends RowAction
     public function handle(Model $model)
     {
         $row = collect($this->getRow());
-        $data = $row->except(['project_id','created_at'])->toArray();
+        $data = $row->except(['project_id','is_notify','created_at'])->toArray();
         try{
             DB::transaction(function () use($row,$data){
                 if(DB::table('app_project')->insert($data)){
