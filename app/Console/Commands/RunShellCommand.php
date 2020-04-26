@@ -110,7 +110,7 @@ class RunShellCommand extends Command
         $projects = $model->orderBy('created_at','ASC')->get();
         if($projects->count()){
             \Mail::send('emails.projectSubmitNotify',['projects'=>$projects],function($message){
-                $to = ['753251210@qq.com','75806763@qq.com','196247448@qq.com'];
+                $to = ['753251210@qq.com','75806763@qq.com','196247448@qq.com','243920447@qq.com'];
                 $message ->to($to)->subject('算量之家项目审核');
             });
             $model->update(['is_notify'=>1]);
