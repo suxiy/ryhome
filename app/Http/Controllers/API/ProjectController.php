@@ -59,9 +59,8 @@ class ProjectController extends ApiController
     public function updateStatusByProjectId(Request $request){
         try{
             $id = $request->get('id');
-            $status = $request->get('status');
-            if($id and $status){
-                if(DB::table('app_project')->where('id',$id)->update(['status'=>$status])){
+            if($id){
+                if(DB::table('app_project')->where('id',$id)->update(['status'=>'已完成'])){
                     return '操作成功';
                 }
             }
@@ -99,6 +98,7 @@ class ProjectController extends ApiController
                 if(DB::table('app_project')->where('id',$id)->limit(1)
                     ->update([
                         'winbidphone'=>$request->get('submitphone'),
+                        'status'=>'正在服务中',
                     ])){
                     return '操作成功';
                 }

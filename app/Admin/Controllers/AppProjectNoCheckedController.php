@@ -98,6 +98,10 @@ class AppProjectNoCheckedController extends Controller
             $actions->add(new \App\Admin\Actions\Project\Verify);
         });
 
+        $grid->batchActions(function ($batch) {
+            $batch->add(new \App\Admin\Actions\Project\VerifyBatch);
+        });
+
         $grid->filter(function($filter){
             // 去掉默认的id过滤器
             $filter->disableIdFilter();
