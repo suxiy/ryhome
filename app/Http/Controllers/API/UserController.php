@@ -38,7 +38,7 @@ class UserController extends ApiController
                         ['password',$password]
                     ])
                     ->get(['id','nickname','phone','skill','address','introduce','time'])->toArray();
-                return $this->success($data);
+                return $this->text(json_encode($data,320));
             }
             throw new \Exception('error');
         }catch (\Exception $e){
