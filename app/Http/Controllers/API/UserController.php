@@ -1,12 +1,10 @@
-<?php
-
-namespace App\Http\Controllers\API;
+<?php namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     public function selectAllUser(Request $request){
         $data = DB::table('app_user')
@@ -40,11 +38,11 @@ class UserController extends Controller
                         ['password',$password]
                     ])
                     ->get(['id','nickname','phone','skill','address','introduce','time'])->toArray();
-                return response()->json($data);
+                return $this->success($data);
             }
             throw new \Exception('error');
         }catch (\Exception $e){
-            return response()->json();
+            return $this->error();
         }
     }
 

@@ -92,6 +92,7 @@
                     <a href="https://nova.laravel.com">Nova</a>
                     <a href="https://forge.laravel.com">Forge</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
+                    <a href="https://m.kuaidi100.com/" target="_blank">快递查询</a>
                 </div>
             </div>
         </div>
