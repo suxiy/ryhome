@@ -90,7 +90,7 @@ class AppCompanyController extends Controller
         $grid->disableCreateButton();
 
         $grid->actions(function ($actions) {
-            $actions->disableEdit();
+            //TODO
         });
 
         $grid->filter(function($filter){

@@ -42,8 +42,8 @@ class UploadController extends Controller
                 if(!in_array($extension,$allow_extension)){
                     throw new \Exception('图片类型错误');
                 }
-                $uri = '/upload/'.$type;
-                $path = base_path().$uri;
+                $uri = 'XXplatformImg/bussinessimage';
+                $path = public_path($uri);
                 if(!is_dir($path)){
                     mkdir($path,0777,true);
                 }
