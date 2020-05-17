@@ -28,23 +28,6 @@ class AppCompanyreviewController extends Controller
             ->body($this->grid());
     }
 
-    public function approve($id,Content $content)
-    {
-        $result = AppCompanyreview::approved($id);
-        if ($result) {
-            $data = [
-                'status'  => true,
-                'message' => '操作成功',
-            ];
-        } else {
-            $data = [
-                'status'  => false,
-                'message' => '操作失败',
-            ];
-        }
-        return response()->json($data);
-    }
-
     /**
      * Show interface.
      *
@@ -111,6 +94,7 @@ class AppCompanyreviewController extends Controller
         $grid->actions(function ($actions) {
             $actions->disableDelete();
             $actions->disableEdit();
+            $actions->add(new \App\Admin\Actions\Company\Verify);
         });
 
         $grid->disableFilter();
@@ -165,67 +149,6 @@ class AppCompanyreviewController extends Controller
         $form = new Form(new AppCompanyreview);
 
         return $form;
-    }
-
-    protected function renderApprove($tools,$id)
-    {
-        $url = '/'.ltrim($tools->getResource(), '/').'/'.$id.'/approve';
-        $listPath = '/'.ltrim($tools->getResource(), '/');
-        $approveConfirm = '确认审核通过';
-        $confirm = '确认';
-        $cancel = trans('admin.cancel');
-        $class = uniqid();
-        $script = <<<SCRIPT
-$('.{$class}-approve').unbind('click').click(function() {
-    swal({
-        title: "$approveConfirm",
-        type: "success",
-        showCancelButton: true,
-        confirmButtonColor: "#00a65a",
-        confirmButtonText: "$confirm",
-        showLoaderOnConfirm: true,
-        cancelButtonText: "$cancel",
-        preConfirm: function() {
-            return new Promise(function(resolve) {
-                $.ajax({
-                    method: 'POST',
-                    url: "{$url}",
-                    data: {
-                        _token:LA.token,
-                    },
-                    success: function (data) {
-                    console.log(data)
-                        if(data.status){
-                            $.pjax({container:'#pjax-container', url: '{$listPath}' });
-                        }
-                        resolve(data);
-                    }
-                });
-            });
-        }
-    }).then(function(result) {
-        var data = result.value;
-        if (typeof data === 'object') {
-            if (data.status) {
-                swal(data.message, '', 'success');
-            } else {
-                swal(data.message, '', 'error');
-            }
-        }
-    });
-});
-
-SCRIPT;
-
-        Admin::script($script);
-
-        return <<<HTML
-<div class="btn-group pull-right" style="margin-right: 5px">
-    <a href="" class="btn btn-sm btn-success {$class}-approve" title="通过">
-        <i class="fa fa-edit"></i><span class="hidden-xs"> 通过</span>
-    </a>
-</div>
-HTML;
     }
 
 
