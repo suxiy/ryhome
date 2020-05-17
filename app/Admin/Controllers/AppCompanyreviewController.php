@@ -92,7 +92,6 @@ class AppCompanyreviewController extends Controller
         $grid->disableCreateButton();
 
         $grid->actions(function ($actions) {
-            $actions->disableDelete();
             $actions->disableEdit();
             $actions->add(new \App\Admin\Actions\Company\Verify);
         });
@@ -132,8 +131,6 @@ class AppCompanyreviewController extends Controller
         $show->panel()->tools(function($tools)use($id){
             $tools->disableList();
             $tools->disableEdit();
-
-            $tools->append($this->renderApprove($tools,$id));
         });
 
         return $show;
