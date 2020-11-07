@@ -46,6 +46,26 @@ class UserController extends ApiController
         }
     }
 
+    public function loginByOpenId(Request $request){
+        try{
+            $openid = $request->get('openid');
+            if($openid){
+                $data = DB::table('app_user')
+                    ->where([
+                        ['openid',$openid],
+                    ])
+                    ->first();
+                if($data){
+                    return $this->success($data);
+                }else{
+                    return $this->failLogin('user not exists');
+                }
+            }throw new \Exception('require openid');
+        }catch (\Exception $e){
+            return $this->error($e);
+        }
+    }
+
     public function selectUserByProjectId(Request $request){
         try{
             $projectid = $request->get('projectid');

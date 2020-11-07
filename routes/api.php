@@ -57,6 +57,7 @@ Route::middleware('throttle:60,1')->group(function() {
     Route::post('/updatePassword', 'API\UserController@updatePassword');
     //算客登录
     Route::post('/login', 'API\UserController@login');
+    Route::post('/loginByOpenId', 'API\UserController@loginByOpenId');
 });
 
 /**企业********************************************************/

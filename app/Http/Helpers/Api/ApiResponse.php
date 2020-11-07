@@ -76,15 +76,11 @@ trait ApiResponse
      * 跳注册页面
      * @return mixed
      */
-    public function failLogin(){
+    public function failLogin($msg=''){
         return $this->respond([
             'code'=>2,
-            'message'=>'',
-            'data'=>[
-                'isConfirm'=>false,
-                'name'=>'',
-                'phone'=>''
-            ]
+            'message'=>$msg,
+            'data'=>[]
         ]);
     }
 
