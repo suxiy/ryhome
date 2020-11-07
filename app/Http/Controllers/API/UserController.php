@@ -31,14 +31,19 @@ class UserController extends ApiController
         try{
             $phone = $request->get('phone');
             $password = $request->get('password');
+            $openid = $request->get('openid');
             if($phone&&$password){
-                $data = DB::table('app_user')
+                $user = DB::table('app_user')
                     ->where([
                         ['phone',$phone],
                         ['password',$password]
                     ])
-                    ->get(['id','nickname','phone','skill','address','introduce','time'])->toArray();
-                return $this->text(json_encode($data,320));
+                    ->first();
+                //统计openid
+                if($openid && $user && !$user->openid){
+                    DB::table('app_user')->where('id',$user->id)->update(['openid'=>$openid]);
+                }
+                return $this->text(json_encode([$user],320));
             }
             throw new \Exception('error');
         }catch (\Exception $e){
