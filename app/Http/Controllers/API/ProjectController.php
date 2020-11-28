@@ -137,7 +137,7 @@ class ProjectController extends ApiController
                 $insertId = DB::table('app_project_no_checked')->insertGetId($data);
                 if($insertId){
                     $id_new = 'SLZJ'.date('Ymd').$insertId;
-                    DB::table('app_project')->where('project_id',$insertId)
+                    DB::table('app_project_no_checked')->where('project_id',$insertId)
                         ->update(['id'=>$id_new]);
                     return $this->success(['id'=>$id],'发布成功');
                 }
