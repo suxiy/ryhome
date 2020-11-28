@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //$schedule->command('run:shell send_wxs_msg')->everyMinute();
+        $schedule->command('run:shell send_wxs_msg')->everyMinute();
         $schedule->command('run:shell send_notify')->everyMinute();
     }
 
