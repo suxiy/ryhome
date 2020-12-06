@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('run:shell send_wxs_msg')->everyMinute();
         $schedule->command('run:shell send_notify')->everyMinute();
+        $schedule->command('run:shell send_winbid_msg')->everyMinute();
     }
 
     /**

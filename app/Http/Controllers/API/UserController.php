@@ -43,11 +43,11 @@ class UserController extends ApiController
                 if($openid && $user && !$user->openid){
                     DB::table('app_user')->where('id',$user->id)->update(['openid'=>$openid]);
                 }
-                return $this->text(json_encode([$user],320));
+                return $this->text($user?(json_encode([$user],320)):'');
             }
             throw new \Exception('error');
         }catch (\Exception $e){
-            return $this->error();
+            return $this->error('');
         }
     }
 

@@ -17,7 +17,7 @@ class RunShellCommand extends Command
     {
         try{
             $option = $this->argument('option');
-            $allow_options = ['send_wxs_msg','create_menu','send_notify'];
+            $allow_options = ['send_wxs_msg','create_menu','send_notify','send_winbid_msg'];
             if(in_array($option,$allow_options)){
                 call_user_func([__CLASS__,$option]);
                 $this->line('All done');
@@ -56,6 +56,40 @@ class RunShellCommand extends Command
                 }
             }
             DB::table('app_project')->where('project_id',$project->project_id)->update(['is_send'=>1]);
+        }
+    }
+
+    protected function send_winbid_msg(){
+        $projects = DB::table('app_project')
+            ->where('is_notify_winbid',0)
+            ->whereNotNull('winbidphone')
+            ->where('winbidphone','<>','')
+            ->orderBy('publishtime','ASC')->get();
+        if($projects){
+            $phones = $projects->pluck('winbidphone');
+            $openids = DB::table('app_user')->whereIn('phone',$phones)->pluck('openid','phone');
+            foreach($projects as $project){
+                $open_id = $openids->get($project->winbidphone);
+                $project_json = json_encode($project);
+                $wechat = app()->make(\App\Lib\WechatService::class);
+                $wechat->app->template_message->send([
+                    'touser' => $open_id,
+                    'template_id' => 'yiatqkZMKCr8nbAc_F_lMT0wQVxDcRmvThDqlgbLCJs',
+                    'url' => 'https://easywechat.org',
+                    'miniprogram' => [
+                        'appid' => 'wxd31aecbc4af3deb2',
+                        'pagepath' => 'pages/project/projectinfo?project='.$project_json,
+                    ],
+                    'data' => [
+                        'first'=>'恭喜您中标！',
+                        'keyword1' => $project->contactperson,
+                        'keyword2' => $project->purpose,
+                        'remark'=>'点击查看中标详情',
+                    ],
+                ]);
+            }
+            $project_ids = $projects->pluck('project_id');
+            DB::table('app_project')->whereIn('project_id',$project_ids)->update(['winbidphone'=>1]);
         }
     }
 
