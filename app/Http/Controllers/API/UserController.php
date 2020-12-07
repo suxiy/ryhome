@@ -32,6 +32,7 @@ class UserController extends ApiController
             $phone = $request->get('phone');
             $password = $request->get('password');
             $openid = $request->get('openid');
+            $unionid = $request->get('unionid');
             if($phone&&$password){
                 $user = DB::table('app_user')
                     ->where([
@@ -41,7 +42,7 @@ class UserController extends ApiController
                     ->first();
                 //统计openid
                 if($openid && $user && !$user->openid){
-                    DB::table('app_user')->where('id',$user->id)->update(['openid'=>$openid]);
+                    DB::table('app_user')->where('id',$user->id)->update(['openid'=>$openid,'unionid'=>$unionid]);
                 }
                 return $this->text($user?(json_encode([$user],320)):'');
             }
@@ -54,6 +55,7 @@ class UserController extends ApiController
     public function loginByOpenId(Request $request){
         try{
             $openid = $request->get('openid');
+            $unionid = $request->get('unionid');
             if($openid){
                 $data = DB::table('app_user')
                     ->where([
@@ -61,6 +63,9 @@ class UserController extends ApiController
                     ])
                     ->first();
                 if($data){
+                    if($unionid && $data && !$data->unionid){
+                        DB::table('app_user')->where('id',$data->id)->update(['unionid'=>$unionid]);
+                    }
                     return $this->success($data);
                 }else{
                     return $this->failLogin('user not exists');
@@ -137,6 +142,7 @@ class UserController extends ApiController
                 'time'=>date('Y-m-d H:i:s'),
                 'openid'=>$request->get('openid'),
                 'inviter'=>$request->get('invite_code'),
+                'unionid'=>$request->get('unionid'),
             ];
             if($data){
                 if(DB::table('app_user')->insert($data)){

@@ -67,27 +67,31 @@ class RunShellCommand extends Command
             ->orderBy('publishtime','ASC')->get();
         if($projects){
             $phones = $projects->pluck('winbidphone');
-            $openids = DB::table('app_user')->whereIn('phone',$phones)->pluck('openid','phone');
-            foreach($projects as $project){
-                $open_id = $openids->get($project->winbidphone);
-                if($open_id){
-                    $project_json = json_encode($project);
-                    $wechat = app()->make(\App\Lib\WechatService::class);
-                    $wechat->app->template_message->send([
-                        'touser' => $open_id,
-                        'template_id' => 'yiatqkZMKCr8nbAc_F_lMT0wQVxDcRmvThDqlgbLCJs',
-                        'url' => 'https://easywechat.org',
-                        'miniprogram' => [
-                            'appid' => 'wxd31aecbc4af3deb2',
-                            'pagepath' => 'pages/project/projectinfo?project='.$project_json,
-                        ],
-                        'data' => [
-                            'first'=>'恭喜您中标！',
-                            'keyword1' => $project->contactperson,
-                            'keyword2' => $project->purpose,
-                            'remark'=>'点击查看中标详情',
-                        ],
-                    ]);
+            $unionids = DB::table('app_user')->whereIn('phone',$phones)->pluck('unionid','phone');
+            if($unionids){
+                $open_ids = DB::table('wxs_user')->where('follow',1)->where('subscribe',1)
+                    ->whereIn('union_id',$unionids)->pluck('open_id','union_id');
+                foreach($projects as $project){
+                    $open_id = $open_ids->get($unionids->get($project->winbidphone));
+                    if($open_id){
+                        $project_json = json_encode($project);
+                        $wechat = app()->make(\App\Lib\WechatService::class);
+                        $wechat->app->template_message->send([
+                            'touser' => $open_id,
+                            'template_id' => 'yiatqkZMKCr8nbAc_F_lMT0wQVxDcRmvThDqlgbLCJs',
+                            'url' => 'https://easywechat.org',
+                            'miniprogram' => [
+                                'appid' => 'wxd31aecbc4af3deb2',
+                                'pagepath' => 'pages/project/projectinfo?project='.$project_json,
+                            ],
+                            'data' => [
+                                'first'=>'恭喜您中标！',
+                                'keyword1' => $project->contactperson,
+                                'keyword2' => $project->purpose,
+                                'remark'=>'点击查看中标详情',
+                            ],
+                        ]);
+                    }
                 }
             }
             $project_ids = $projects->pluck('project_id');
