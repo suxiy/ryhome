@@ -91,7 +91,7 @@ class RunShellCommand extends Command
                 }
             }
             $project_ids = $projects->pluck('project_id');
-            DB::table('app_project')->whereIn('project_id',$project_ids)->update(['winbidphone'=>1]);
+            DB::table('app_project')->whereIn('project_id',$project_ids)->update(['is_notify_winbid'=>1]);
         }
     }
 
