@@ -128,6 +128,7 @@ class AppProjectController extends Controller
         $show->time('完成时间');
         $show->projectdescribe('项目描述');
         $show->status('项目状态');
+        $show->winbidphone('中标人手机号');
 
         $show->panel()
             ->tools(function ($tools) {
