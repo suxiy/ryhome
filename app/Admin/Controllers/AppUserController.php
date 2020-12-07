@@ -100,6 +100,7 @@ class AppUserController extends Controller
             // 去掉默认的id过滤器
             $filter->disableIdFilter();
             // 在这里添加字段过滤器
+            $filter->like('nickname','昵称');
             $filter->like('phone','手机');
         });
 
