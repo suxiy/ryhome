@@ -49,8 +49,11 @@ class WeChatServiceController extends BaseController
         $open_id = array_get($user,'original.openid');
         $user_info = $this->wechat->app->user->get($open_id);
         $union_id = array_get($user_info,'unionid');
-        $subscribe = $request->get('cancel')?0:1;
-        WxsUser::query()->updateOrInsert(['open_id' => $open_id], ['union_id'=>$union_id,'subscribe' => $subscribe]);
+        if($union_id){
+            $data['union_id'] = $union_id;
+        }
+        $data['subscribe'] = $request->get('cancel')?0:1;
+        WxsUser::query()->updateOrInsert(['open_id' => $open_id], $data);
         header('Location: '.url('wechat/subscribe'));
     }
 
