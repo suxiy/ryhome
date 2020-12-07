@@ -69,8 +69,8 @@ class RunShellCommand extends Command
             $phones = $projects->pluck('winbidphone');
             $unionids = DB::table('app_user')->whereIn('phone',$phones)->pluck('unionid','phone');
             if($unionids){
-                $open_ids = DB::table('wxs_user')->where('follow',1)->where('subscribe',1)
-                    ->whereIn('union_id',$unionids)->pluck('open_id','union_id');
+                $open_ids = DB::table('wxs_user')->where('follow',1)
+                    ->whereIn('union_id',$unionids->values())->pluck('open_id','union_id');
                 foreach($projects as $project){
                     $open_id = $open_ids->get($unionids->get($project->winbidphone));
                     if($open_id){
