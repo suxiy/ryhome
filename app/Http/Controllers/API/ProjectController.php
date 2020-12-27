@@ -74,16 +74,15 @@ class ProjectController extends ApiController
         try{
             $id = $request->get('id');
             if($id){
-                if(DB::table('app_project')->where('id',$id)->limit(1)
+                DB::table('app_project')->where('id',$id)->limit(1)
                     ->update([
                         'contactperson'=>$request->get('contactperson'),
                         'contactphone'=>$request->get('contactphone'),
                         'department'=>$request->get('department'),
                         'projectdescribe'=>$request->get('projectdescribe'),
 //                        'reward'=>$request->get('reward'),//价格不允许修改
-                    ])){
-                    return '操作成功';
-                }
+                    ]);
+                return '操作成功';
             }
             throw new \Exception('error');
         }catch (\Exception $e){
