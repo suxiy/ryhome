@@ -156,8 +156,8 @@ class AppAdpublishController extends Controller
 
     protected function renderApprove($tools,$id)
     {
-        $url = '/'.ltrim($tools->getResource(), '/').'/'.$id.'/approve';
-        $listPath = '/'.ltrim($tools->getResource(), '/');
+        $url = ltrim($tools->getResource(), '/').'/'.$id.'/approve';
+        $listPath = ltrim($tools->getResource(), '/');
         $approveConfirm = '确认审核通过';
         $confirm = '确认';
         $cancel = trans('admin.cancel');
