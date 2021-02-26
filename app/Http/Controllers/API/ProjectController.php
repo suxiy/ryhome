@@ -61,6 +61,8 @@ class ProjectController extends ApiController
             $id = $request->get('id');
             if($id){
                 if(DB::table('app_project')->where('id',$id)->update(['status'=>'已完成'])){
+                    $winbidphone = DB::table('app_project')->where('id',$id)->value('winbidphone');
+                    DB::table('app_user')->where('phone',$winbidphone)->increment('winbidnum');
                     return '操作成功';
                 }
             }
