@@ -6,13 +6,19 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
-class ADController extends Controller
+class ADController extends ApiController
 {
     public function selectAllAD(Request $request){
         $data = DB::table('app_ad')
             ->orderByDesc('time')
             ->get()->toArray();
         return response()->json($data);
+    }
+
+    public function AdGet(Request $request){
+        $id = $request->get('id');
+        $data = DB::table('app_ad')->find($id);
+        return $this->success($data);
     }
 
     public function ADpublish(Request $request){

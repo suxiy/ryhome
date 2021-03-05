@@ -87,6 +87,7 @@ Route::middleware('throttle:60,1')->group(function() {
 Route::middleware('throttle:60,1')->group(function() {
     Route::get('/selectAllAD', 'API\ADController@selectAllAD');
     Route::post('/ADpublish', 'API\ADController@ADpublish');
+    Route::any('ad/get', 'API\ADController@AdGet');
 });
 /**Upload********************************************************/
 Route::middleware('throttle:60,1')->group(function() {
