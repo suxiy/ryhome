@@ -14,3 +14,4 @@ yarn-error.log
 /update.sql
 /public/logs
 /public/vendor
+/public/XXplatformImg/*

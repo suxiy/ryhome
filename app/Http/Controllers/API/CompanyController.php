@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
-class CompanyController extends Controller
+class CompanyController extends ApiController
 {
     public function selectCompany(Request $request){
         try{
@@ -47,14 +47,26 @@ class CompanyController extends Controller
                 'elsePhone'=>$request->get('elsePhone'),
                 'resgeterTime'=>date('Y-m-d'),
             ];
+            log_array('api',__FUNCTION__,$data);
             if($data){
+                $img = $data['bussinessimg'];
+                $info = pathinfo($img);
+                if(!in_array($info['extension'],['jpg','jpeg','png'])){
+                    throw new \Exception('图片格式错误,只允许jpg,png',1);
+                }
+                $phone = $data['phone'];
+                if(DB::table('app_company')->where('phone',$phone)->exists()){
+                    throw new \Exception('发布失败,该手机号已注册',1);
+                }if(DB::table('app_companyreview')->where('phone',$phone)->exists()){
+                    throw new \Exception('发布失败,该手机号已注册过',1);
+                }
                 if(DB::table('app_companyreview')->insert($data)){
                     return '发布成功';
                 }
             }
-            throw new \Exception('error');
+            throw new \Exception('发布失败',1);
         }catch (\Exception $e){
-            return '发布失败';
+            return $e->getCode()==1?$e->getMessage():'发布失败';
         }
     }
 
