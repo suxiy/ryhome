@@ -51,17 +51,18 @@ class CompanyController extends ApiController
             if($data){
                 $img = $data['bussinessimg'];
                 $info = pathinfo($img);
-                if(!in_array($info['extension'],['jpg','jpeg','png'])){
+                if(isset($info['extension'])&&in_array($info['extension'],['jpg','jpeg','png'])){
+                    $phone = $data['phone'];
+                    if(DB::table('app_company')->where('phone',$phone)->exists()){
+                        throw new \Exception('发布失败,该手机号已注册',1);
+                    }if(DB::table('app_companyreview')->where('phone',$phone)->exists()){
+                        throw new \Exception('发布失败,该手机号已注册过',1);
+                    }
+                    if(DB::table('app_companyreview')->insert($data)){
+                        return '发布成功';
+                    }
+                }else{
                     throw new \Exception('图片格式错误,只允许jpg,png',1);
-                }
-                $phone = $data['phone'];
-                if(DB::table('app_company')->where('phone',$phone)->exists()){
-                    throw new \Exception('发布失败,该手机号已注册',1);
-                }if(DB::table('app_companyreview')->where('phone',$phone)->exists()){
-                    throw new \Exception('发布失败,该手机号已注册过',1);
-                }
-                if(DB::table('app_companyreview')->insert($data)){
-                    return '发布成功';
                 }
             }
             throw new \Exception('发布失败',1);

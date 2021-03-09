@@ -31,13 +31,19 @@ class ADController extends ApiController
                 'time'=>date('Y-m-d H:i:s'),
             ];
             if($data){
-                if(DB::table('app_adpublish')->insert($data)){
-                    return '发布成功';
+                $img = $data['image'];
+                $info = pathinfo($img);
+                if(isset($info['extension'])&&in_array($info['extension'],['jpg','jpeg','png'])){
+                    if(DB::table('app_adpublish')->insert($data)){
+                        return '发布成功';
+                    }
+                }else{
+                    throw new \Exception('图片格式错误,只允许jpg,png',1);
                 }
             }
             throw new \Exception('error');
         }catch (\Exception $e){
-            return '发布失败';
+            return $e->getCode()==1?$e->getMessage():'发布失败';
         }
     }
 }
