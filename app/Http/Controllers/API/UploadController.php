@@ -36,6 +36,7 @@ class UploadController extends Controller
             $file = $_FILES['file']??null;
             if($file){
                 $filename = $file['name'];
+                log_array('api',__FUNCTION__,$file);
                 $tmp = $file['tmp_name'];
                 $extension = pathinfo($filename)['extension'];
                 $allow_extension = ['jpg', 'jpeg', 'gif', 'bmp', 'png'];
