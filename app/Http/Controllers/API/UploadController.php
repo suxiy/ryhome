@@ -56,9 +56,9 @@ class UploadController extends Controller
                 }
             }
         }catch (\Exception $e){
-            return false;
+            return $e->getMessage();
         }
-        return false;
+        return '上传图片失败';
     }
 
     protected function is_https() {
